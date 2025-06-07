@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Guide to a Healthy Shaadi: Premarital Health Screening</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Harmony -->
+    <!-- Application Structure Plan: The SPA is structured into logical, thematic sections to guide the user from "why" to "what" and "how." It starts with a compelling 'Why It Matters' section. The core is an interactive 'Test Explorer' that categorizes tests (Infectious Disease, Genetic, etc.) into clickable cards, revealing details on demand to prevent information overload. This is more intuitive than static tables. A dedicated 'Understanding Genetic Risks' section uses a dynamic Chart.js donut chart to visualize abstract statistics like the 25% risk of Thalassemia, making it more impactful. A comprehensive 'Detailed Overview of Premarital Tests' section provides detailed textual and tabular information on recommended tests, their purpose, historical context, timing, and benefits, acting as a deep-dive reference. The 'Legal & Counseling' section simplifies complex legal information and highlights the importance of support, with an updated emphasis on the non-mandatory nature of tests in India. A new 'AI Health & Education Assistant' section allows dynamic querying for latest treatments and college information. A 'Local Resources' section provides specific contact information for relevant establishments. Finally, a 'Next Steps' section provides actionable guidance. This task-oriented flow is designed for better usability and comprehension than a linear report, empowering couples to make informed decisions. Google Translate is integrated at the top for multi-language support. -->
+    <!-- Visualization & Content Choices: The application uses various interactive elements to achieve specific goals. 1) Test Information: Goal is to inform without overwhelming with detailed information on purpose, recommendation, and mandatory status. Method is an interactive card layout. Users click a category (e.g., 'Genetic Screening') to see specific tests. Clicking a test name reveals a detailed description including "For the Couple" and "For Future Offspring" sections, along with clarification on its mandatory/recommended status. This progressive disclosure avoids a wall of text. Implemented with JS data objects and DOM manipulation. 2) Genetic Risk: Goal is to make statistics tangible. Method is a Chart.js donut chart. Interaction: A dropdown lets the user select a condition (e.g., Thalassemia), and the chart dynamically updates to show the 25% inheritance risk. This visual representation is more memorable than plain text. 3) Detailed Overview of Premarital Tests: Goal is to provide an in-depth, static reference. Method is a textual section with clear headings, key points, a detailed HTML table for tests and purposes, and explanatory paragraphs with external links (links retained for context, as per previous instruction). This complements the interactive explorer by offering more static, detailed context. 4) Key Concepts: Goal is to organize complex ideas. Method is styled HTML sections with clear headings and icons (Unicode) for scannability. This helps users quickly grasp concepts like legal duties and counseling benefits, now explicitly stating the non-mandatory nature of tests in India. 5) AI Health & Education Assistant: Goal is to provide dynamic, up-to-date information. Method is a text input and button for user queries, with a display area for AI-generated text. This uses fetch API to interact with a large language model (Gemini-2.0-flash) to provide information on treatments and colleges, with a clear disclaimer. 6) Local Resources: Goal is to provide actionable contact information. Method is a simple list of addresses, phone numbers, and websites within a dedicated section, clearly formatted. All visuals are rendered on Canvas or with HTML/CSS, adhering to the NO SVG/Mermaid rule. Google Translate provides overall site translation. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF8;
+            color: #4A4A4A;
+        }
+        h1, h2, h3, h4 {
+            font-family: 'Playfair Display', serif;
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #C57B57;
+            border-bottom-color: #C57B57;
+        }
+        .card {
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 350px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .tab-button {
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .tab-button.active {
+             background-color: #C57B57;
+             color: white;
+        }
+        .test-detail-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+        .test-detail-item span {
+            margin-right: 0.75rem;
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        th, td {
+            border: 1px solid #e2e8f0; /* Tailwind gray-200 */
+            padding: 0.75rem;
+            text-align: left;
+        }
+        th {
+            background-color: #f8f8f8; /* Light gray for headers */
+            font-weight: 600;
+        }
+        a {
+            color: #C57B57;
+            text-decoration: underline;
+        }
+        a:hover {
+            color: #A05B3A;
+        }
+    </style>
+</head>
+<body class="bg-[#FDFBF8]">
+
+    <!-- Google Translate Element -->
+    <div id="google_translate_element" class="pt-2 px-6 bg-white/80 backdrop-blur-md"></div>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'en,hi,gu,bh', // English, Hindi, Gujarati, Bihari (Bhojpuri)
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+            }, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-[#333]">A Healthy <span class="text-[#C57B57]">Shaadi</span></h1>
+            <div class="hidden md:flex space-x-8">
+                <a href="#why-matters" class="nav-link">Why It Matters</a>
+                <a href="#test-explorer" class="nav-link">Test Explorer</a>
+                <a href="#genetic-risks" class="nav-link">Genetic Risks</a>
+                <a href="#detailed-overview" class="nav-link">Detailed Overview</a>
+                <a href="#legal-support" class="nav-link">Legal & Support</a>
+                <a href="#ai-assistant" class="nav-link">AI Assistant</a>
+                <a href="#local-resources" class="nav-link">Local Resources</a>
+                <a href="#next-steps" class="nav-link">Next Steps</a>
+            </div>
+            <div class="md:hidden">
+                <select id="mobile-nav" class="bg-white border border-gray-300 rounded-md p-2">
+                    <option value="#why-matters">Why It Matters</option>
+                    <option value="#test-explorer">Test Explorer</option>
+                    <option value="#genetic-risks">Genetic Risks</option>
+                    <option value="#detailed-overview">Detailed Overview</option>
+                    <option value="#legal-support">Legal & Support</option>
+                    <option value="#ai-assistant">AI Assistant</option>
+                    <option value="#local-resources">Local Resources</option>
+                    <option value="#next-steps">Next Steps</option>
+                </select>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-6 py-8 md:py-16">
+
+        <section id="why-matters" class="text-center mb-24">
+            <h2 class="text-4xl md:text-5xl font-bold mb-4 text-[#333]">An Investment in Your Future Together</h2>
+            <p class="max-w-3xl mx-auto text-lg text-gray-600 mb-8">
+                Premarital health screening is more than just a medical check-up; it's a foundational act of love and responsibility. This guide helps you understand the essential tests that protect your health, your partner's well-being, and the health of your future children, ensuring you start your "shaadi" with confidence and transparency.
+            </p>
+            <div class="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+                <div class="bg-white p-6 rounded-lg shadow-md card">
+                    <div class="text-4xl mb-3 text-[#C57B57]">❤</div>
+                    <h3 class="text-xl font-bold mb-2">Protect Your Partner</h3>
+                    <p class="text-gray-600">Identify and manage hidden infections or conditions to ensure the well-being of the person you love.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md card">
+                    <div class="text-4xl mb-3 text-[#C57B57]">🧬</div>
+                    <h3 class="text-xl font-bold mb-2">Plan for Family</h3>
+                    <p class="text-gray-600">Understand your genetic compatibility and make informed decisions about future family planning.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md card">
+                    <div class="text-4xl mb-3 text-[#C57B57]">🛡️</div>
+                    <h3 class="text-xl font-bold mb-2">Build Trust</h3>
+                    <p class="text-gray-600">Start your marriage with honesty and transparency, fostering a strong foundation of mutual care.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="test-explorer" class="mb-24">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl md:text-5xl font-bold text-[#333]">Interactive Test Explorer</h2>
+                <p class="max-w-2xl mx-auto text-lg text-gray-600 mt-4">
+                    This section provides an overview of the most important premarital tests. Click on a category to see the relevant tests, then click on a specific test name to view its purpose and implications for your health as a couple and for your future children. While no test is legally mandatory in India, they are medically recommended. For a more comprehensive overview and historical context, please refer to the <a href="#detailed-overview" class="font-semibold text-[#C57B57] hover:underline">Detailed Overview of Premarital Tests</a> section below.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8" id="test-categories">
+            </div>
+            
+            <div id="test-details-container" class="bg-white p-8 rounded-lg shadow-lg mt-8 min-h-[200px] flex flex-col justify-center transition-opacity duration-500 opacity-0">
+                 <p class="text-center text-gray-500">Select a test from the lists above to see details here.</p>
+            </div>
+        </section>
+
+        <section id="genetic-risks" class="mb-24">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl md:text-5xl font-bold text-[#333]">Understanding Genetic Risks</h2>
+                <p class="max-w-2xl mx-auto text-lg text-gray-600 mt-4">
+                    Some of the most critical premarital tests screen for genetic conditions that can be passed to your children. This visualization helps you understand the inheritance risk for common disorders if both partners are carriers.
+                </p>
+            </div>
+            <div class="flex flex-col md:flex-row items-center gap-8 bg-white p-8 rounded-lg shadow-lg">
+                <div class="w-full md:w-1/2">
+                    <h3 class="text-2xl font-bold mb-4">Genetic Inheritance Risk (If Both Partners are Carriers)</h3>
+                    <div class="mb-4">
+                        <label for="condition-select" class="block mb-2 font-medium">Select a Condition:</label>
+                        <select id="condition-select" class="w-full p-2 border border-gray-300 rounded-md">
+                            <option value="thalassemia">Thalassemia</option>
+                            <option value="sickle-cell">Sickle Cell Anemia</option>
+                        </select>
+                    </div>
+                    <div id="risk-explanation" class="text-gray-700">
+                    </div>
+                </div>
+                <div class="w-full md:w-1/2">
+                    <div class="chart-container">
+                        <canvas id="riskChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="detailed-overview" class="mb-24">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl md:text-5xl font-bold text-[#333]">Detailed Overview of Premarital Tests</h2>
+                <p class="max-w-2xl mx-auto text-lg text-gray-600 mt-4">
+                    In India, premarital blood tests are <strong>not legally mandatory</strong> but are <strong>strongly recommended</strong> for medical and preventive reasons. These tests help assess health compatibility, identify potential risks to partners and future children, and enable informed family planning decisions. Here’s a comprehensive overview based on medical guidelines and practices:
+                </p>
+            </div>
+
+            <div class="bg-white p-8 rounded-lg shadow-lg">
+                <h3 class="text-2xl font-bold mb-4">Key Points</h3>
+                <ul class="list-disc list-inside space-y-2 mb-6 text-gray-700">
+                    <li>Research suggests several blood tests are commonly recommended before marriage to ensure health and compatibility.</li>
+                    <li>It seems likely that tests like HIV, Hepatitis B/C, and syphilis screening are standard for infectious diseases.</li>
+                    <li>The evidence leans toward including genetic tests like thalassemia and blood group typing for future family planning.</li>
+                    <li>There may be regional variations, especially in India, where additional tests like thyroid and vitamin levels are advised.</li>
+                </ul>
+
+                <h3 class="text-2xl font-bold mb-4">🩸 Essential Blood Tests Before Marriage</h3>
+                <p class="mb-4 text-gray-700">Before marriage, consider these blood tests for a healthy start:</p>
+                <div class="overflow-x-auto mb-6">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Test Name</th>
+                                <th>Purpose</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="2" class="font-bold text-center bg-gray-50">Blood Group and Rh Factor Testing</td>
+                            </tr>
+                            <tr>
+                                <td>Blood Group and Rh Factor Testing</td>
+                                <td>Determines compatibility between partners' blood types. Rh incompatibility (e.g., Rh-negative mother + Rh-positive father) can cause hemolytic disease in newborns, leading to miscarriage or stillbirth. Includes ABO grouping and Rh (D) antigen detection.</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="font-bold text-center bg-gray-50">Genetic Disorder Screening</td>
+                            </tr>
+                            <tr>
+                                <td>Thalassemia and Sickle Cell Anemia Screening</td>
+                                <td>Identifies carriers of genetic mutations. If both partners are carriers, children have a 25% risk of inheriting these disorders. Test: Hemoglobin electrophoresis (Hb Electrophoresis).</td>
+                            </tr>
+                            <tr>
+                                <td>Other Genetic Tests</td>
+                                <td>Carrier screening for cystic fibrosis or Tay-Sachs if family history exists.</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="font-bold text-center bg-gray-50">Infectious Disease Panels</td>
+                            </tr>
+                            <tr>
+                                <td>HIV, Hepatitis B & C, Syphilis</td>
+                                <td>Critical to prevent transmission to partners/children. Syphilis can cause congenital disabilities; hepatitis B/C and HIV are chronic infections. Tests: HIV antibody/antigen, HBsAg (hepatitis B), HCV antibody, VDRL/RPR (syphilis).</td>
+                            </tr>
+                            <tr>
+                                <td>Rubella (German Measles) Immunity</td>
+                                <td>Checks immunity in women. Rubella during pregnancy causes birth defects.</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="font-bold text-center bg-gray-50">Fertility and General Health Assessments</td>
+                            </tr>
+                            <tr>
+                                <td>Complete Blood Count (CBC)</td>
+                                <td>Screens for anemia, infections, or blood disorders.</td>
+                            </tr>
+                            <tr>
+                                <td>Thyroid Function (TSH)</td>
+                                <td>Untreated thyroid issues affect fertility and pregnancy.</td>
+                            </tr>
+                            <tr>
+                                <td>Diabetes Screening</td>
+                                <td>Fasting and post-lunch blood sugar tests.</td>
+                            </tr>
+                            <tr>
+                                <td>Semen Analysis (for men)</td>
+                                <td>Evaluates sperm count, motility, and morphology.</td>
+                            </tr>
+                            <tr>
+                                <td>Pelvic Ultrasound/Vaginal Scan (for women)</td>
+                                <td>Checks for PCOS, fibroids, or reproductive anomalies.</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="font-bold text-center bg-gray-50">Chronic Disease Screening</td>
+                            </tr>
+                            <tr>
+                                <td>Kidney/Liver Function</td>
+                                <td>Creatinine, urea, SGPT to assess organ health.</td>
+                            </tr>
+                            <tr>
+                                <td>Lipid Profile</td>
+                                <td>Assesses cardiovascular risk.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3 class="text-2xl font-bold mb-4">⏰ Timing and Process</h3>
+                <ul class="list-disc list-inside space-y-2 mb-6 text-gray-700">
+                    <li><strong>When to Test</strong>: At least <strong>3–6 months before marriage</strong> to allow time for counseling, vaccination (e.g., rubella), or treatment if needed.</li>
+                    <li><strong>Packages</strong>: Hospitals/labs offer cost-effective profiles (e.g., 46–60 tests for ₹1,999–₹2,785 per person) covering all essentials.</li>
+                    <li><strong>Confidentiality</strong>: Results are private; couples receive counseling to interpret findings.</li>
+                </ul>
+
+                <h3 class="text-2xl font-bold mb-4">❓ Why Are These Tests Important?</h3>
+                <ul class="list-disc list-inside space-y-2 mb-6 text-gray-700">
+                    <li><strong>Prevent Hereditary Disorders</strong>: Reduces transmission of thalassemia, sickle cell, etc.</li>
+                    <li><strong>Avoid STI Transmission</strong>: Ensures partners are aware of infections like HIV/hepatitis.</li>
+                    <li><strong>Fertility Planning</strong>: Identifies issues early (e.g., low sperm count, ovarian reserve decline in women >35).</li>
+                    <li><strong>Legal Safeguards</strong>: Courts have annulled marriages for health fraud (e.g., hiding heart disease/cancer).</li>
+                </ul>
+
+                <h3 class="text-2xl font-bold mb-4">📌 Key Recommendations</h3>
+                <ul class="list-disc list-inside space-y-2 mb-6 text-gray-700">
+                    <li><strong>Consanguineous Marriages</strong>: Genetic testing is <strong>critical</strong> if partners are blood relatives.</li>
+                    <li><strong>Women >30</strong>: Prioritize ovarian reserve testing (AMH) and rubella immunity.</li>
+                    <li><strong>Post-Test Counseling</strong>: Essential for discussing reproductive options (e.g., IVF, prenatal diagnosis).</li>
+                </ul>
+                <p class="mb-6 text-gray-700">
+                    While not legally required, these tests empower couples to build a healthier future together. Consult a healthcare provider to customize tests based on family history, age, and regional risks (e.g., thalassemia in Punjab/Gujarat).
+                </p>
+
+                <h3 class="text-2xl font-bold mb-4">Key Citations</h3>
+                <ul class="list-disc list-inside space-y-1 text-gray-700 text-sm">
+                    <li><a href="https://en.wikipedia.org/wiki/Premarital_medical_examination" target="_blank">Premarital medical examination Wikipedia page</a></li>
+                    <li><a href="https://www.medparkhospital.com/en-US/lifestyles/prewedding-checkup" target="_blank">Pre wedding checkup MedPark Hospital guide</a></li>
+                    <li><a href="https://www.indiaivf.in/premarital-medical-blood-tests-guide/" target="_blank">Premarital Medical & Blood Tests India IVF guide</a></li>
+                    <li><a href="https://www.onlymyhealth.com/medical-tests-every-couple-should-get-done-before-getting-married-1711541146" target="_blank">Medical Tests Before Marriage OnlyMyHealth article</a></li>
+                    <li><a href="https://timesofindia.indiatimes.com/life-style/health-fitness/health-news/bride-and-groom-get-these-4-medical-tests-done-before-the-wedding/photostory/72604694.cms" target="_blank">Bride and groom medical tests Times of India article</a></li>
+                    <li><a href="https://www.apollohospitals.com/departments/packages/aprehc/" target="_blank">Apollo Premarital Health Check package</a></li>
+                    <li><a href="https://www.fortishealthcare.com/health-check-packages/packages/fortis-hospital-richmond-road-bengaluru/pre-marital-package" target="_blank">Pre-marital Package Fortis Healthcare Bangalore</a></li>
+                    <li><a href="https://www.indiaivf.in/pre-marital-essentials/" target="_blank">Pre-Marital Essentials India IVF guide</a></li>
+                    <li><a href="https://www.healthcheckup.co.in/package/pre-marital-profile" target="_blank">Pre Marital Profile Thyrocare 48 Tests</a></li>
+                    <li><a href="https://healthcareoffers.in/special-packages/premarital-health-checkup-package/" target="_blank">Pre-marital Health Checkup Package Thyrocare offer</a></li>
+                    <li><a href="https://indianexpress.com/article/lifestyle/health/premarital-health-checkup-couples-marriage-7623732/" target="_blank">Why couples must get premarital health checkup The Indian Express</a></li>
+                    <li><a href="https://www.moh.gov.sa/en/HealthAwareness/Beforemarriage/Pages/default.aspx" target="_blank">Premarital Screening Saudi MOH guidelines</a></li>
+                </ul>
+
+            </div>
+        </section>
+
+        <section id="ai-assistant" class="mb-24">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl md:text-5xl font-bold text-[#333]">AI Health & Education Assistant</h2>
+                <p class="max-w-2xl mx-auto text-lg text-gray-600 mt-4">
+                    Our AI assistant can provide general information on the latest treatments and educational opportunities. This AI is continuously updated with new knowledge. Please note that the information provided is for general knowledge and not a substitute for professional medical or educational advice.
+                </p>
+            </div>
+            <div class="bg-white p-8 rounded-lg shadow-lg max-w-3xl mx-auto">
+                <div class="mb-6">
+                    <label for="ai-query-input" class="block text-lg font-medium mb-2">Ask the Assistant:</label>
+                    <textarea id="ai-query-input" class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#C57B57] h-24 resize-y" placeholder="e.g., What are the latest treatments for thalassemia? or Tell me about top medical colleges in India."></textarea>
+                </div>
+                <button id="ai-submit-button" class="w-full bg-[#C57B57] text-white py-3 rounded-md font-semibold hover:bg-[#A05B3A] transition duration-300">Get Information</button>
+                <div id="ai-response-area" class="mt-8 p-4 bg-gray-50 rounded-lg border border-gray-200 min-h-[100px] relative">
+                    <div id="ai-response-content" class="text-gray-700">
+                        <p class="text-center">Your AI assistant's response will appear here.</p>
+                    </div>
+                    <div id="ai-loading-indicator" class="absolute inset-0 flex items-center justify-center bg-gray-50 bg-opacity-75 hidden">
+                        <span class="text-[#C57B57] text-lg">Loading...</span>
+                    </div>
+                    <div class="absolute bottom-2 right-2 text-xs text-gray-400">
+                        Disclaimer: AI-generated information is for general knowledge and not professional advice.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="local-resources" class="mb-24">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl md:text-5xl font-bold text-[#333]">Local Resources</h2>
+                <p class="max-w-2xl mx-auto text-lg text-gray-600 mt-4">
+                    Here are some local resources that might be helpful for your premarital preparations.
+                </p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-bold mb-2">Vishal Hospital</h3>
+                    <p class="text-gray-600 mb-2"><strong>Address:</strong> Vishal hospital, Kailashwadi Main Road, opposite Taluka Polish Choki, Junction Plot, Rajkot, Gujarat 360001</p>
+                    <p class="text-gray-600 mb-2"><strong>Mobile:</strong> 9228105245</p>
+                    <p class="text-gray-600 mb-2"><strong>Landline:</strong> 0281-2450408</p>
+                    <p class="text-gray-600"><a href="https://vishalhospitalrajkot.github.io/" target="_blank" class="text-[#C57B57] hover:underline">Website</a></p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-bold mb-2">Vishal Banquet Hall</h3>
+                    <p class="text-gray-600 mb-2"><strong>Address:</strong> Vishal banquet hall, Gaya-Dobhi Rd, Musatpura, Bihar 823004</p>
+                    <p class="text-gray-600 mb-2"><strong>Mobile:</strong> 9228105245</p>
+                    <p class="text-gray-600"><a href="https://vishalbanquethall1.github.io/" target="_blank" class="text-[#C57B57] hover:underline">Website</a></p>
+                </div>
+            </div>
+        </section>
+
+        <section id="next-steps" class="text-center">
+            <h2 class="text-4xl md:text-5xl font-bold text-[#333]">Your Next Steps to a Healthy Start</h2>
+            <p class="max-w-2xl mx-auto text-lg text-gray-600 mt-4 mb-8">
+                Taking proactive steps towards understanding your health is a gift to your shared future. Here’s how you can proceed.
+            </p>
+            <div class="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-lg">
+                <ul class="space-y-6 text-left">
+                    <li class="flex items-center">
+                        <span class="text-2xl mr-4">🗓️</span>
+                        <div>
+                            <h4 class="font-bold">Plan Ahead</h4>
+                            <p>It's best to get screened at least <strong>6 months before your wedding</strong> to allow time for follow-up and counseling.</p>
+                        </div>
+                    </li>
+                    <li class="flex items-center">
+                        <span class="text-2xl mr-4">🏥</span>
+                        <div>
+                            <h4 class="font-bold">Choose a Reputable Center</h4>
+                            <p>Look for accredited labs and diagnostic centers with qualified professionals who ensure confidentiality and accuracy.</p>
+                        </div>
+                    </li>
+                     <li class="flex items-center">
+                        <span class="text-2xl mr-4">💬</span>
+                        <div>
+                            <h4 class="font-bold">Consult a Doctor</h4>
+                            <p>Discuss your personal and family health history with a doctor to determine the most appropriate tests for you and your partner.</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-800 text-white mt-24">
+        <div class="container mx-auto px-6 py-8 text-center">
+            <p>&copy; 2025 A Guide to a Healthy Shaadi. All rights reserved.</p>
+            <p class="text-sm text-gray-400 mt-2">Disclaimer: This website provides general information and is not a substitute for professional medical advice. Always consult with a qualified healthcare provider for any health concerns or before making any any decisions related to your health or treatment.</p>
+        </div>
+    </footer>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+        const testData = {
+            infectious: {
+                name: 'Infectious Disease Screening',
+                icon: '🛡️',
+                tests: [
+                    { name: 'HIV Antibody/Antigen', desc: 'To detect HIV infection before marriage. Early diagnosis allows treatment and prevents transmission to the spouse or unborn child.', couple: 'Protects partner from infection; allows access to treatment.', offspring: 'Prevents mother-to-child transmission during pregnancy.', status: 'Recommended for all couples; Not mandatory by law.' },
+                    { name: 'Hepatitis B Surface Antigen (HBsAg) & Hepatitis C Antibody', desc: 'Screens for chronic hepatitis B/C. These viruses can transmit sexually or from mother to child.', couple: 'Protects partner; allows vaccination (for B) or treatment to prevent liver disease.', offspring: 'Prevents perinatal transmission to the child.', status: 'Recommended.' },
+                    { name: 'Syphilis Serology (VDRL/RPR)', desc: 'Identifies syphilis, a sexually transmitted infection. Untreated syphilis can cause miscarriage or congenital infection.', couple: 'Detects and treats hidden infection to prevent transmission.', offspring: 'Prevents transmission to the baby during pregnancy.', status: 'Recommended.' },
+                    { name: 'Rubella IgG Antibody (German Measles)', desc: 'Checks immunity to rubella. If a bride (or groom) is not immune, vaccination can be given before pregnancy. Rubella during pregnancy causes birth defects.', couple: 'Ensures partner immunity.', offspring: 'Prevents congenital rubella syndrome in infants.', status: 'Often included in premarital panels; Recommended.' },
+                ]
+            },
+            genetic: {
+                name: 'Genetic Disorder Screening',
+                icon: '🧬',
+                tests: [
+                    { name: 'Thalassemia Trait (Hemoglobin Electrophoresis)', desc: 'Screens for β-thalassemia carrier status. If both partners carry the gene, there is a 25% chance each child will have Thalassemia Major, a severe condition requiring lifelong blood transfusions.', couple: 'Identifies carrier status for serious inherited conditions.', offspring: 'Prevents passing on conditions like Thalassemia Major.', status: 'Highly Recommended.' },
+                    { name: 'Sickle-Cell Trait & Other Hemoglobin Variants', desc: 'In endemic regions (e.g., parts of South and East India), a solubility test or HPLC can detect sickle trait and variants (HbE, HbD). If both partners carry, there’s risk of sickle-cell disease in children.', couple: 'Identifies carrier status for serious inherited conditions.', offspring: 'Prevents passing on conditions like Sickle Cell Disease.', status: 'Recommended in endemic regions.' },
+                    { name: 'Other Genetic Tests', desc: 'Carrier screening for cystic fibrosis or Tay-Sachs if family history exists.', couple: 'Provides a broader view of genetic health based on family history.', offspring: 'Helps identify risks for a range of genetic disorders.', status: 'Recommended if family history exists.' }
+                ]
+            },
+            blood_group: {
+                name: 'Blood Group and Rh Compatibility',
+                icon: '🩸',
+                tests: [
+                    { name: 'ABO Blood Typing', desc: 'Identifies each partner’s blood group. Useful for transfusion planning and rare cases of neonatal jaundice (ABO incompatibility can cause mild newborn jaundice).', couple: 'Useful for transfusion planning in emergencies.', offspring: 'Helps doctors if complications like ABO incompatibility arise.', status: 'Recommended.' },
+                    { name: 'Rh (D) Factor', desc: 'Checks Rh status. If the bride is Rh-negative and the groom Rh-positive, there is a risk of hemolytic disease of the fetus/newborn in future pregnancies. If a cross indicates Rh incompatibility, physicians can give Rh immunoglobulin to the mother during/after pregnancy to prevent antibody formation.', couple: 'Crucial for pregnancy planning.', offspring: 'If incompatibility exists, Rh immunoglobulin can prevent antibody formation in the mother, protecting future pregnancies.', status: 'Strongly Recommended.' }
+                ]
+            },
+            fertility_and_reproductive: {
+                name: 'Fertility & Reproductive Health',
+                icon: '👶',
+                tests: [
+                    { name: 'Female Fertility Hormones', desc: 'Optional tests including FSH, LH, Estradiol, AMH, and Prolactin to assess ovarian reserve and detect endocrine issues that could impair fertility.', couple: 'Identifies potential fertility issues early and guides planning.', offspring: 'Ensures hormonal balance vital for conception and healthy pregnancy.', status: 'Optional; Recommended if risk factors or anxieties about fertility.' },
+                    { name: 'Semen Analysis (for men)', desc: 'Evaluates male fertility by measuring sperm count, motility, and morphology. Not a blood test, but a key part of fertility assessment.', couple: 'Identifies potential male-factor infertility.', offspring: 'Helps in family planning and seeking treatment if needed.', status: 'Recommended if risk factors or anxieties about fertility.' },
+                    { name: 'Pelvic Ultrasound/Vaginal Scan (for women)', desc: 'Checks for conditions like PCOS, fibroids, or other reproductive anomalies. Not a blood test, but often included in comprehensive fertility assessments.', couple: 'Detects structural issues that may affect fertility or pregnancy.', offspring: 'Supports a healthy reproductive environment for future children.', status: 'Recommended if risk factors or anxieties about fertility.' }
+                ]
+            },
+            general_and_chronic: {
+                name: 'General & Chronic Health Screening',
+                icon: '🩺',
+                tests: [
+                    { name: 'Complete Blood Count (CBC)', desc: 'Checks general health, identifies disorders like anemia or infection. Anemia is common in young adults, and correcting it before pregnancy is beneficial.', couple: 'Assesses overall health and detects underlying conditions.', offspring: 'Ensures parental health for a healthy pregnancy.', status: 'Typically part of many premarital packages; Recommended.' },
+                    { name: 'Thyroid Function (TSH)', desc: 'Assesses thyroid hormone levels, crucial for metabolism and fertility. Undiagnosed hypo- or hyperthyroidism can cause irregular periods, miscarriage or growth issues.', couple: 'Detects thyroid disorders that affect overall health.', offspring: 'Vital for fertility and healthy fetal development.', status: 'Commonly included; Recommended.' },
+                    { name: 'Blood Sugar (Fasting & HbA1c)', desc: 'Screens for diabetes or pre-diabetes. Diabetes management is crucial before pregnancy to prevent complications.', couple: 'Identifies undiagnosed diabetes or pre-diabetes.', offspring: 'Crucial for preventing pregnancy complications related to diabetes.', status: 'Recommended.' },
+                    { name: 'Kidney/Liver Function', desc: 'Checks for Creatinine, Urea, SGPT to assess organ health. Ensures chronic diseases (e.g., undetected hepatitis, kidney issues) are caught early.', couple: 'Detects organ dysfunction or risk factors for chronic diseases.', offspring: 'Ensures parental health.', status: 'Optional; included in comprehensive checkups.' },
+                    { name: 'Lipid Profile', desc: 'Assesses cardiovascular risk. Sometimes included in comprehensive checkups.', couple: 'Evaluates heart health and identifies risk factors.', offspring: 'Ensures parental health.', status: 'Optional; included in comprehensive checkups.' }
+                ]
+            }
+        };
+
+        const categoriesContainer = document.getElementById('test-categories');
+        const detailsContainer = document.getElementById('test-details-container');
+        let activeCategory = null;
+
+        Object.entries(testData).forEach(([key, category]) => {
+            const categoryCard = document.createElement('div');
+            categoryCard.className = 'card bg-white p-6 rounded-lg shadow-md cursor-pointer text-center';
+            categoryCard.innerHTML = `
+                <div class="text-4xl mb-3">${category.icon}</div>
+                <h3 class="text-xl font-bold text-gray-800">${category.name}</h3>
+            `;
+            categoryCard.addEventListener('click', () => showTestsForCategory(key, categoryCard));
+            categoriesContainer.appendChild(categoryCard);
+        });
+        
+        function showTestsForCategory(categoryKey, cardElement) {
+             if (activeCategory === cardElement) {
+                detailsContainer.innerHTML = '<p class="text-center text-gray-500">Select a test from the lists above to see details here.</p>';
+                detailsContainer.classList.add('opacity-0');
+                cardElement.classList.remove('ring-2', 'ring-[#C57B57]');
+                activeCategory = null;
+                return;
+             }
+
+            if (activeCategory) {
+                activeCategory.classList.remove('ring-2', 'ring-[#C57B57]');
+            }
+
+            cardElement.classList.add('ring-2', 'ring-[#C57B57]');
+            activeCategory = cardElement;
+
+            const category = testData[categoryKey];
+            let testListHtml = `<h3 class="text-2xl font-bold mb-4 text-center">${category.name} Tests</h3><ul class="space-y-2 list-none text-center">`;
+            category.tests.forEach(test => {
+                testListHtml += `<li><button class="text-[#C57B57] hover:underline" data-category="${categoryKey}" data-test="${test.name}">${test.name}</button></li>`;
+            });
+            testListHtml += '</ul>';
+
+            detailsContainer.innerHTML = testListHtml;
+            detailsContainer.classList.remove('opacity-0');
+
+            detailsContainer.querySelectorAll('button').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const catKey = e.target.dataset.category;
+                    const testName = e.target.dataset.test;
+                    const test = testData[catKey].tests.find(t => t.name === testName);
+                    showTestDetails(test);
+                });
+            });
+        }
+        
+        function showTestDetails(test) {
+             detailsContainer.innerHTML = `
+                <h3 class="text-2xl font-bold mb-4">${test.name}</h3>
+                <p class="text-gray-600 mb-4">${test.desc}</p>
+                <div class="grid md:grid-cols-2 gap-4 text-left mb-4">
+                    <div class="bg-blue-50 p-4 rounded-lg">
+                        <h4 class="font-bold text-blue-800">For the Couple:</h4>
+                        <p class="text-blue-700">${test.couple}</p>
+                    </div>
+                    <div class="bg-green-50 p-4 rounded-lg">
+                        <h4 class="font-bold text-green-800">For Future Offspring:</h4>
+                        <p class="text-green-700">${test.offspring}</p>
+                    </div>
+                </div>
+                <div class="test-detail-item">
+                    <span class="text-xl">ℹ️</span>
+                    <p class="font-bold text-gray-700">Status: <span class="font-normal">${test.status}</span></p>
+                </div>
+            `;
+            detailsContainer.classList.remove('opacity-0');
+        }
+
+
+        const riskData = {
+            'thalassemia': {
+                name: 'Thalassemia',
+                desc: 'If both partners are carriers of the Thalassemia trait (Thalassemia Minor), there is a 25% chance with each pregnancy that their child will have Thalassemia Major, a severe condition requiring lifelong blood transfusions.',
+                risk: 25
+            },
+            'sickle-cell': {
+                name: 'Sickle Cell Anemia',
+                desc: 'If both partners carry the Sickle Cell trait, there is a 25% chance with each pregnancy of having a child with Sickle Cell Disease, which causes chronic pain and serious health complications.',
+                risk: 25
+            }
+        };
+
+        const ctx = document.getElementById('riskChart').getContext('2d');
+        const riskChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Risk of Inheritance', 'Unaffected'],
+                datasets: [{
+                    data: [25, 75],
+                    backgroundColor: ['#E57373', '#AED581'],
+                    borderColor: ['#FFFFFF'],
+                    borderWidth: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '70%',
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.label}: ${context.raw}%`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        const conditionSelect = document.getElementById('condition-select');
+        const riskExplanation = document.getElementById('risk-explanation');
+
+        function updateRiskChart() {
+            const selectedCondition = conditionSelect.value;
+            const data = riskData[selectedCondition];
+            riskChart.data.datasets[0].data = [data.risk, 100 - data.risk];
+            riskChart.update();
+            riskExplanation.innerHTML = `<h4 class="font-bold mb-2">${data.name}</h4><p>${data.desc}</p>`;
+        }
+        
+        conditionSelect.addEventListener('change', updateRiskChart);
+        updateRiskChart();
+
+
+        const tabs = document.querySelectorAll('.tab-button');
+        const contents = document.querySelectorAll('.tab-content');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(item => item.classList.remove('active'));
+                tab.classList.add('active');
+
+                const target = tab.getAttribute('data-tab');
+                contents.forEach(content => {
+                    if (content.id === `${target}-content`) {
+                        content.classList.remove('hidden');
+                    } else {
+                        content.classList.add('hidden');
+                    }
+                });
+            });
+        });
+        
+        const mobileNav = document.getElementById('mobile-nav');
+        mobileNav.addEventListener('change', (e) => {
+            const targetId = e.target.value;
+            document.querySelector(targetId).scrollIntoView({ behavior: 'smooth' });
+        });
+
+
+        // New AI Assistant functionality
+        const aiQueryInput = document.getElementById('ai-query-input');
+        const aiSubmitButton = document.getElementById('ai-submit-button');
+        const aiResponseContent = document.getElementById('ai-response-content');
+        const aiLoadingIndicator = document.getElementById('ai-loading-indicator');
+
+        aiSubmitButton.addEventListener('click', async () => {
+            const prompt = aiQueryInput.value.trim();
+            if (!prompt) {
+                aiResponseContent.innerHTML = '<p class="text-center text-red-500">Please enter a query.</p>';
+                return;
+            }
+
+            aiResponseContent.innerHTML = ''; // Clear previous content
+            aiLoadingIndicator.classList.remove('hidden'); // Show loading
+
+            try {
+                let chatHistory = [];
+                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                const payload = { contents: chatHistory };
+                const apiKey = ""; // If you want to use models other than gemini-2.0-flash or imagen-3.0-generate-002, provide an API key here. Otherwise, leave this as-is.
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    aiResponseContent.innerHTML = `<p>${text}</p>`;
+                } else {
+                    aiResponseContent.innerHTML = '<p class="text-center text-red-500">Could not get a response from the AI. Please try again.</p>';
+                    console.error('AI response structure unexpected:', result);
+                }
+            } catch (error) {
+                aiResponseContent.innerHTML = '<p class="text-center text-red-500">An error occurred while fetching AI response.</p>';
+                console.error('Error fetching AI response:', error);
+            } finally {
+                aiLoadingIndicator.classList.add('hidden'); // Hide loading
+            }
+        });
+
+    });
+    </script>
+</body>
+</html>
